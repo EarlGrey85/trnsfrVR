@@ -1,0 +1,12 @@
+{
+	"events": [
+		{
+			"stepId" : "step1",
+			"stepName" : "Blah"
+		},
+		{
+			"stepId" : "step2",
+			"stepName" : "qwerty"
+		},
+	]
+}
