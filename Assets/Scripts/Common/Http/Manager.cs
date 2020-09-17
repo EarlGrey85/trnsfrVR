@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Http
 {
@@ -17,15 +18,24 @@ namespace Http
     public const string ROUTE_EVENTS = "/transfr/platform/events";
     
     private Platform.Settings _platformSettings;
-    private string _url;
     private Request.Factory _requestFactory;
+    private string _url;
 
     public Manager(Platform.Settings platformSettings, Request.Factory factory)
     {
       _platformSettings = platformSettings;
       _url = $"{platformSettings.Protocol}://{platformSettings.Domain}";
       _requestFactory = factory;
+      var request = _requestFactory.Create(
+        "https://www.transfrvr.com/", 
+        () => { Debug.Log("OK");}, 
+        () => { Debug.Log("Fail"); });
       Debug.Log(_url);
+    }
+
+    public void StartAsyncRequest(Request request, Action successCallback, Action failCallback)
+    {
+      
     }
   }
 }

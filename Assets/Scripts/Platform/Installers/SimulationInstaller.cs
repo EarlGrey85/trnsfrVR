@@ -1,3 +1,4 @@
+using System;
 using Http;
 using Simulation;
 using Zenject;
@@ -8,6 +9,6 @@ public class SimulationInstaller : MonoInstaller
     {
         Container.BindInterfacesAndSelfTo<SimulationFacade>().AsSingle().NonLazy();
         Container.Bind<Manager>().AsSingle();
-        Container.BindFactory<Request, Request.Factory>().AsSingle();
+        Container.BindFactory<string, Action, Action, Request, Request.Factory>().AsSingle();
     }
 }
