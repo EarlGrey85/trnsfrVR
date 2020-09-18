@@ -1,0 +1,7 @@
+{
+	"tasks": {
+		"task1" : "blah",
+		"task2" : "blah2"
+	},
+	"currentTaskId" : "task1"
+}

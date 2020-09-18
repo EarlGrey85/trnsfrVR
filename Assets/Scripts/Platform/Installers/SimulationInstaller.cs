@@ -1,4 +1,5 @@
 using Http;
+using Platform;
 using Simulation;
 using Zenject;
 
@@ -8,5 +9,6 @@ public class SimulationInstaller : MonoInstaller
     {
         Container.BindInterfacesAndSelfTo<SimulationFacade>().AsSingle().NonLazy();
         Container.Bind<Manager>().FromSubContainerResolve().ByInstaller<ManagerInstaller>().AsSingle();
+        Container.Bind<FakePlatform>().AsSingle();
     }
 }

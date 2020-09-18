@@ -8,10 +8,10 @@ namespace Simulation
 {
   public class SimulationData
   {
-    [JsonProperty("tasks")] public string[] Tasks { get; }
-    [JsonProperty("currentTaskId")] public int CurrentTaskId { get; }
+    [JsonProperty("tasks")] public SortedDictionary<string, string> Tasks { get; }
+    [JsonProperty("currentTaskId")] public string CurrentTaskId { get; }
 
-    public SimulationData(string[] tasks, int currentTaskId)
+    public SimulationData(SortedDictionary<string, string> tasks, string currentTaskId)
     {
       Tasks = tasks;
       CurrentTaskId = currentTaskId;
@@ -22,7 +22,7 @@ namespace Simulation
   {
     private Http.Manager _httpManager;
     private Dictionary<string, string> _currentEventData = new Dictionary<string, string>();
-    [JsonProperty] private SimulationData _simulationDataData;
+    [JsonProperty] private SimulationData _simulationData;
     
 
     public SimulationFacade(Http.Manager httpManager)
@@ -32,28 +32,43 @@ namespace Simulation
 
     void ITickable.Tick()
     {
+      if (Input.GetKeyDown(KeyCode.A))
+      {
+        GetNextTask();
+      }
     }
 
     private void ParseTasksData(Response response)
     {
-      _simulationDataData = JsonConvert.DeserializeObject<SimulationData>(response.ResponseText);
+      _simulationData = JsonConvert.DeserializeObject<SimulationData>(response.ResponseText);
 
-      Debug.Log($"currentTaskId: {_simulationDataData.CurrentTaskId}");
+      Debug.Log($"currentTaskId: {_simulationData.CurrentTaskId}");
 
-      foreach (var task in _simulationDataData.Tasks)
+      foreach (var task in _simulationData.Tasks)
       {
-        Debug.Log(task);
+        Debug.Log($"{task.Key} : {task.Value}");
       }
+    }
+
+    private void ParseNextTaskData(Response response)
+    {
+      var nextTask = response.ResponseText;
     }
 
     void IInitializable.Initialize()
     {
       GetTaskList();
+      GetNextTask();
     }
 
     private void GetTaskList()
     {
       _httpManager.StartAsyncRequest("getTasks", _currentEventData, ParseTasksData);
+    }
+
+    private void GetNextTask()
+    {
+      _httpManager.StartAsyncRequest("nextTask", _currentEventData, ParseNextTaskData);
     }
   }
 }
