@@ -6,14 +6,14 @@ using Zenject;
 
 namespace Simulation
 {
-  public class Tasks
+  public class SimulationData
   {
-    [JsonProperty("tasks")] public Dictionary<string, string> IdToTaskName { get; }
+    [JsonProperty("tasks")] public string[] Tasks { get; }
     [JsonProperty("currentTaskId")] public int CurrentTaskId { get; }
 
-    public Tasks(Dictionary<string, string> idToTaskName, int currentTaskId)
+    public SimulationData(string[] tasks, int currentTaskId)
     {
-      IdToTaskName = idToTaskName;
+      Tasks = tasks;
       CurrentTaskId = currentTaskId;
     }
   }
@@ -22,7 +22,7 @@ namespace Simulation
   {
     private Http.Manager _httpManager;
     private Dictionary<string, string> _currentEventData = new Dictionary<string, string>();
-    [JsonProperty] private Tasks _tasksData;
+    [JsonProperty] private SimulationData _simulationDataData;
     
 
     public SimulationFacade(Http.Manager httpManager)
@@ -32,21 +32,17 @@ namespace Simulation
 
     void ITickable.Tick()
     {
-      if (Input.GetKeyDown(KeyCode.A))
-      {
-        
-      }
     }
 
     private void ParseTasksData(Response response)
     {
-      _tasksData = JsonConvert.DeserializeObject<Tasks>(response.ResponseText);
+      _simulationDataData = JsonConvert.DeserializeObject<SimulationData>(response.ResponseText);
 
-      Debug.Log($"currentId: {_tasksData.CurrentTaskId}");
+      Debug.Log($"currentTaskId: {_simulationDataData.CurrentTaskId}");
 
-      foreach (var kv in _tasksData.IdToTaskName)
+      foreach (var task in _simulationDataData.Tasks)
       {
-        Debug.Log($"{kv.Key} : {kv.Value}");
+        Debug.Log(task);
       }
     }
 
