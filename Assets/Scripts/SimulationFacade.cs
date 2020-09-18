@@ -14,7 +14,10 @@ namespace Simulation
 
     void ITickable.Tick()
     {
-      
+      if (Input.GetKeyDown(KeyCode.A))
+      {
+        _httpManager.StartAsyncRequest(string.Empty, () => Debug.Log("success"), () => Debug.Log("fail"));
+      }
     }
   }
 }
