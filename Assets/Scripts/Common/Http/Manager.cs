@@ -23,12 +23,12 @@ namespace Http
     public const string ROUTE_EVENTS = "/transfr/platform/events";
     
     private Platform.Settings _platformSettings;
-    private Request.Factory _requestFactory;
+    private RequestFactory _requestFactory;
     private string _serverAddress;
 
     public static string SessionToken { get; private set; }
 
-    public Manager(Platform.Settings platformSettings, Request.Factory factory)
+    public Manager(Platform.Settings platformSettings, RequestFactory factory)
     {
       _platformSettings = platformSettings;
       _serverAddress = $"{platformSettings.Protocol}://{platformSettings.Domain}";
@@ -37,10 +37,15 @@ namespace Http
       Debug.Log(_serverAddress);
     }
 
-    public void StartAsyncRequest(string route, Dictionary<string, string> data, Action successCallback, Action<int> failCallback)
+    public void StartAsyncRequest(
+      string route, 
+      Dictionary<string, string> data, 
+      Action<Response> successCallback = null, 
+      Action<int> failCallback = null)
     {
       var request = _requestFactory.Create(
-        $"{_serverAddress}/{route}", 
+        _serverAddress,
+        route,
         successCallback, 
         failCallback, 
         _platformSettings.AuthenticationKey);

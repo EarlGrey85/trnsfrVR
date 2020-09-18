@@ -1,7 +1,0 @@
-{
-	"events": {
-		"event1": "blah",
-		"event2": "blah2"
-	},
-	"currentEvent" : "event1"
-}

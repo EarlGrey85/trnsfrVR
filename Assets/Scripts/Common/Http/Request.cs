@@ -7,27 +7,37 @@ using Zenject;
 
 namespace Http
 {
-  public class Request
+  public class Request : IRequest
   {
-    private Action _successCallback;
+    private Action<Response> _successCallback;
     private Action<int> _failCallback;
-    private readonly string _url;
+    private readonly string _serverAddress;
+    private readonly string _route;
     private readonly WWWForm _wwwForm;
     private readonly UnityWebRequest _request;
     private readonly string _authenticationKey;
+    private readonly Response.Factory _responseFactory;
 
-    public Request(string url, Action successCallBack, Action<int> failCallback, string authenticationKey)
+    public Request(
+      string serverAddress, 
+      string route, 
+      Action<Response> successCallBack, 
+      Action<int> failCallback, 
+      string authenticationKey, 
+      Response.Factory responseFactory)
     {
-      _url = url;
+      _serverAddress = serverAddress;
+      _route = route;
       _successCallback = successCallBack;
       _failCallback = failCallback;
       _authenticationKey = authenticationKey;
+      _responseFactory = responseFactory;
       _wwwForm = new WWWForm();
       
       _wwwForm.headers["token"] = Manager.SessionToken;
       _wwwForm.headers["signature"] = "application/x-www-form-urlencoded";
 
-      _request = UnityWebRequest.Post(_url, _wwwForm);
+      _request = UnityWebRequest.Post($"{serverAddress}/{route}", _wwwForm);
     }
 
     public void AddData(string key, string value)
@@ -48,24 +58,24 @@ namespace Http
       _wwwForm.headers[Manager.SIGNATURE_HEADER] = ComputeRequestHash(_authenticationKey, _wwwForm.data);
       await _request.SendWebRequest();
 
-      const int statusCode = (int) ResponseCode.NoError;
-      if (_request.responseCode != statusCode)
+      if (_request.responseCode != (int) ResponseCode.NoError)
       {
-        Debug.LogError(_request.responseCode);
-        _failCallback.Invoke(statusCode);
+        _failCallback.Invoke((int) _request.responseCode);
+        return;
       }
-      
+
       Debug.Log(_request.responseCode);
-      _successCallback.Invoke();
+      var response = _responseFactory.Create(_request.GetResponseHeaders(), _request.downloadHandler.text);
+      _successCallback.Invoke(response);
     }
     
     private static string ComputeRequestHash (string salt, byte[] data) 
     {
       return Manager.ComputeHash (salt + Encoding.UTF8.GetString (data, 0, data.Length));
     }
-
-    public class Factory : PlaceholderFactory<string, Action, Action<int>, string, Request>
-    {
-    }
+  }
+  
+  public class RequestFactory : PlaceholderFactory<string, string, Action<Response>, Action<int>, string, IRequest>
+  {
   }
 }
