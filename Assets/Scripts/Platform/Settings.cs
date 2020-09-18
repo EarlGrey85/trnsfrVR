@@ -6,5 +6,6 @@
     public string Domain;
     public string Protocol;
     public bool IsDev;
+    public string AuthenticationKey;
   }
 }

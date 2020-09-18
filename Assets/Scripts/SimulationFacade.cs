@@ -6,7 +6,7 @@ namespace Simulation
   public class SimulationFacade : ITickable
   {
     private Http.Manager _httpManager;
-    
+
     public SimulationFacade(Http.Manager httpManager)
     {
       _httpManager = httpManager;

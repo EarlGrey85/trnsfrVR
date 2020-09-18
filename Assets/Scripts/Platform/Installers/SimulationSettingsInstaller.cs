@@ -4,7 +4,7 @@ using Zenject;
 [CreateAssetMenu(fileName = "SimulationSettingsInstaller", menuName = "Installers/SimulationSettingsInstaller")]
 public class SimulationSettingsInstaller : ScriptableObjectInstaller<SimulationSettingsInstaller>
 {
-    [SerializeField] private Platform.Settings _settings;
+    [SerializeField] private Platform.Settings _settings = null;
     
     public override void InstallBindings()
     {

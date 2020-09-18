@@ -9,6 +9,6 @@ public class SimulationInstaller : MonoInstaller
     {
         Container.BindInterfacesAndSelfTo<SimulationFacade>().AsSingle().NonLazy();
         Container.Bind<Manager>().AsSingle();
-        Container.BindFactory<string, Action, Action, Request, Request.Factory>().AsSingle();
+        Container.BindFactory<string, Action, Action, string, Request, Request.Factory>().AsSingle();
     }
 }
