@@ -1,12 +1,7 @@
 {
-	"events": [
-		{
-			"stepId" : "step1",
-			"stepName" : "Blah"
-		},
-		{
-			"stepId" : "step2",
-			"stepName" : "qwerty"
-		},
-	]
+	"events": {
+		"event1": "blah",
+		"event2": "blah2"
+	},
+	"currentEvent" : "event1"
 }
