@@ -37,14 +37,15 @@ namespace Http
       Debug.Log(_serverAddress);
     }
 
-    public void StartAsyncRequest(string route, Action successCallback, Action failCallback)
+    public void StartAsyncRequest(string route, Dictionary<string, string> data, Action successCallback, Action<int> failCallback)
     {
       var request = _requestFactory.Create(
         $"{_serverAddress}/{route}", 
         successCallback, 
         failCallback, 
         _platformSettings.AuthenticationKey);
-      
+
+      request.AddData(data);
       request.Call();
     }
     

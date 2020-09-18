@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -9,13 +10,13 @@ namespace Http
   public class Request
   {
     private Action _successCallback;
-    private Action _failCallback;
+    private Action<int> _failCallback;
     private readonly string _url;
     private readonly WWWForm _wwwForm;
     private readonly UnityWebRequest _request;
     private readonly string _authenticationKey;
 
-    public Request(string url, Action successCallBack, Action failCallback, string authenticationKey)
+    public Request(string url, Action successCallBack, Action<int> failCallback, string authenticationKey)
     {
       _url = url;
       _successCallback = successCallBack;
@@ -34,15 +35,24 @@ namespace Http
       _wwwForm.AddField(key, value);
     }
 
+    public void AddData(Dictionary<string, string> data)
+    {
+      foreach (var kv in data)
+      {
+        _wwwForm.AddField(kv.Key, kv.Value);
+      }
+    }
+
     public async void Call()
     {
       _wwwForm.headers[Manager.SIGNATURE_HEADER] = ComputeRequestHash(_authenticationKey, _wwwForm.data);
       await _request.SendWebRequest();
 
-      if (_request.responseCode != (int) ResponseCode.NoError)
+      const int statusCode = (int) ResponseCode.NoError;
+      if (_request.responseCode != statusCode)
       {
         Debug.LogError(_request.responseCode);
-        _failCallback.Invoke();
+        _failCallback.Invoke(statusCode);
       }
       
       Debug.Log(_request.responseCode);
@@ -54,7 +64,7 @@ namespace Http
       return Manager.ComputeHash (salt + Encoding.UTF8.GetString (data, 0, data.Length));
     }
 
-    public class Factory : PlaceholderFactory<string, Action, Action, string, Request>
+    public class Factory : PlaceholderFactory<string, Action, Action<int>, string, Request>
     {
     }
   }
