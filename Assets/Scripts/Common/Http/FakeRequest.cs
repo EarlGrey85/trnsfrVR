@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Platform;
 using Simulation;
@@ -47,7 +48,6 @@ namespace Http
     public void Call() // it's a fake data provider. reading json from hard drive since I don't have real server
     {
       var response = GetFakeResponse(_route);
-      
       _successCallBack.Invoke(response);
     }
 
@@ -61,7 +61,7 @@ namespace Http
 
           var currentTaskId = $"task{_fakePlatform.CurrentTaskNum}";
 
-          if (!_simulationData.Tasks.ContainsKey(currentTaskId))
+          if (!_simulationData.TaskDescriptionMap.ContainsKey(currentTaskId))
           {
             Debug.LogWarning($"no more tasks");
             currentTaskId = string.Empty;

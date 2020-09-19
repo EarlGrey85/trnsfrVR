@@ -4,7 +4,7 @@ using Zenject;
 
 public class TaskDescriptionInstaller : MonoInstaller
 {
-    [SerializeField] private TaskDescriptionViewModel.Installables _installables;
+    [SerializeField] private TaskDescriptionViewModel.Installables _installables = null;
     
     public override void InstallBindings()
     {

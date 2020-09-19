@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 using UnityEngine;
 using Zenject;
@@ -7,85 +8,108 @@ namespace Simulation
 {
   public class SimulationData
   {
-    [JsonProperty("tasks")] public SortedDictionary<string, string> Tasks { get; }
+    [JsonProperty("tasks")] public SortedDictionary<string, string> TaskDescriptionMap { get; }
     [JsonProperty("currentTaskId")] public string CurrentTaskId { get; }
 
-    public SimulationData(SortedDictionary<string, string> tasks, string currentTaskId)
+    public SimulationData(SortedDictionary<string, string> taskDescriptionMap, string currentTaskId)
     {
-      Tasks = tasks;
+      TaskDescriptionMap = taskDescriptionMap;
       CurrentTaskId = currentTaskId;
     }
   }
   
-  public class SimulationFacade : ITickable, IInitializable
+  public class SimulationFacade : ITickable, IInitializable, IDisposable
   {
     private PlayerController _playerController;
     private Http.Manager _httpManager;
     private Dictionary<string, string> _currentEventData = new Dictionary<string, string>();
-    [JsonProperty] private SimulationData _simulationData;
-
     private Lesson _currentLesson;
-    private Lesson _moveLesson;
-
+    private Dictionary<string, Lesson> _lessonsMap = new Dictionary<string, Lesson>();
+    [JsonProperty] private SimulationData _simulationData;
+    
+    public static event Action TutorialCompleted = delegate {  };
+    
     public SimulationFacade(Http.Manager httpManager)
     {
       _httpManager = httpManager;
-      
     }
     
     void IInitializable.Initialize()
     {
       GetTaskList();
-      GetNextTask();
 
       PlayerController.PlayerReady += OnPlayerReady;
+      Lesson.Completed += OnLessonCompleted;
+    }
+
+    void IDisposable.Dispose()
+    {
+      PlayerController.PlayerReady -= OnPlayerReady;
+      Lesson.Completed -= OnLessonCompleted;
     }
 
     void ITickable.Tick()
     {
-      if (Input.GetKeyDown(KeyCode.A))
-      {
-        GetNextTask();
-      }
-      
       _currentLesson.Tick();
     }
 
     private void OnPlayerReady(PlayerController playerController)
     {
       _playerController = playerController;
-      _moveLesson = new MoveLesson(playerController);
-      _currentLesson = _moveLesson;
-      _currentLesson.OnStart();
+      
+      _lessonsMap = new Dictionary<string, Lesson>
+      {
+        {"task1", new MoveLesson(playerController, GetTaskDescription("task1"))},
+        {"task2", new RotateTurretLesson(playerController, GetTaskDescription("task2"))},
+      };
+      
+      _httpManager.StartAsyncRequest("nextTask", _currentEventData, ProcessNextTaskData);
+    }
+
+    private string GetTaskDescription(string taskId)
+    {
+      if (!_simulationData.TaskDescriptionMap.TryGetValue(taskId, out var description))
+      {
+        return string.Empty;
+      }
+
+      return description;
     }
 
     private void ParseTasksData(Http.Response response)
     {
       _simulationData = JsonConvert.DeserializeObject<SimulationData>(response.ResponseText);
-
-      Debug.Log($"currentTaskId: {_simulationData.CurrentTaskId}");
-
-      foreach (var task in _simulationData.Tasks)
-      {
-        Debug.Log($"{task.Key} : {task.Value}");
-      }
     }
 
-    private void ParseNextTaskData(Http.Response response)
+    private void ProcessNextTaskData(Http.Response response)
     {
-      var nextTask = response.ResponseText;
+      var nextTaskId = response.ResponseText;
+
+      if (!_lessonsMap.TryGetValue(nextTaskId, out var nextLesson))
+      {
+        TutorialCompleted.Invoke();
+        Debug.Log($"tutorial completed!");
+        return;
+      }
+
+      if (!_simulationData.TaskDescriptionMap.TryGetValue(nextTaskId, out var description))
+      {
+        Debug.LogWarning($"no description for taskId: {nextTaskId}");
+      }
+
+      Debug.LogError(_simulationData.TaskDescriptionMap[nextTaskId]);
+      _currentLesson = nextLesson;
+      _currentLesson.OnStart();
     }
-
     
-
     private void GetTaskList()
     {
       _httpManager.StartAsyncRequest("getTasks", _currentEventData, ParseTasksData);
     }
 
-    private void GetNextTask()
+    private void OnLessonCompleted(Lesson lesson)
     {
-      _httpManager.StartAsyncRequest("nextTask", _currentEventData, ParseNextTaskData);
+      _httpManager.StartAsyncRequest("nextTask", _currentEventData, ProcessNextTaskData);
     }
 
     [System.Serializable]

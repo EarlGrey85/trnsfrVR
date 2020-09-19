@@ -6,7 +6,7 @@ using Zenject;
 
 public class SimulationInstaller : MonoInstaller
 {
-    [SerializeField] private SimulationFacade.Installables _installables;
+    [SerializeField] private SimulationFacade.Installables _installables = null;
     
     public override void InstallBindings()
     {
