@@ -1,20 +1,27 @@
 ﻿using System;
-using Zenject;
 
 namespace Simulation
 {
-  public abstract class Lesson : ITickable
+  public abstract class Lesson
   {
     private readonly string _id = null;
     private bool _eventSent;
+    private PlayerController _playerController;
     
     public static event Action<string> LessonCompleted = delegate {  };
     
     public bool IsCompleted { get; private set; }
 
     protected abstract bool Perform();
-    public abstract void OnStart();
-    public abstract void OnEnd();
+    protected abstract void OnStart();
+    protected abstract void OnEnd();
+
+    public Lesson(PlayerController playerController)
+    {
+      _playerController = playerController;
+      
+      OnStart();
+    }
     
     public void Tick()
     {
@@ -24,6 +31,7 @@ namespace Simulation
         {
           LessonCompleted.Invoke(_id);
           _eventSent = true;
+          OnEnd();
         }
         
         return;

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Http;
 using Newtonsoft.Json;
 using UnityEngine;
 using Zenject;
@@ -23,11 +22,15 @@ namespace Simulation
     private Http.Manager _httpManager;
     private Dictionary<string, string> _currentEventData = new Dictionary<string, string>();
     [JsonProperty] private SimulationData _simulationData;
-    
+
+    private Lesson _currentLesson;
+    private Lesson _moveLesson;
 
     public SimulationFacade(Http.Manager httpManager)
     {
       _httpManager = httpManager;
+      // _moveLesson = new MoveLesson();
+      // _currentLesson = _moveLesson;
     }
 
     void ITickable.Tick()
@@ -36,9 +39,11 @@ namespace Simulation
       {
         GetNextTask();
       }
+      
+      // _currentLesson.Tick();
     }
 
-    private void ParseTasksData(Response response)
+    private void ParseTasksData(Http.Response response)
     {
       _simulationData = JsonConvert.DeserializeObject<SimulationData>(response.ResponseText);
 
@@ -50,7 +55,7 @@ namespace Simulation
       }
     }
 
-    private void ParseNextTaskData(Response response)
+    private void ParseNextTaskData(Http.Response response)
     {
       var nextTask = response.ResponseText;
     }
