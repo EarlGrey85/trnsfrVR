@@ -1,9 +1,10 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using Zenject;
 
 namespace Simulation
 {
-  public class PlayerController : ITickable
+  public class PlayerController : ITickable, IInitializable
   {
     private readonly Transform _vehicleTransform;
     private readonly Transform _turretTransform;
@@ -11,7 +12,10 @@ namespace Simulation
     private readonly float _rotationSpeed;
     private readonly float _turretRotationSpeed;
 
+    public Transform PlayerTransform => _vehicleTransform;
     public Transform TurretTransform => _turretTransform;
+    
+    public static event Action<PlayerController> PlayerReady = delegate {  };
 
     public PlayerController(CommonSettings commonSettings, Installables installables)
     {
@@ -20,6 +24,11 @@ namespace Simulation
       _speed = commonSettings.Speed;
       _rotationSpeed = commonSettings.RotationSpeed;
       _turretRotationSpeed = commonSettings.TurretRotationSpeed;
+    }
+
+    void IInitializable.Initialize()
+    {
+      PlayerReady.Invoke(this);
     }
     
     public void Tick()

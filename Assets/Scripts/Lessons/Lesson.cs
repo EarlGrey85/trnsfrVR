@@ -13,14 +13,12 @@ namespace Simulation
     public bool IsCompleted { get; private set; }
 
     protected abstract bool Perform();
-    protected abstract void OnStart();
+    public abstract void OnStart();
     protected abstract void OnEnd();
 
-    public Lesson(PlayerController playerController)
+    protected Lesson(PlayerController playerController)
     {
       _playerController = playerController;
-      
-      OnStart();
     }
     
     public void Tick()

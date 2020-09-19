@@ -19,6 +19,7 @@ namespace Simulation
   
   public class SimulationFacade : ITickable, IInitializable
   {
+    private PlayerController _playerController;
     private Http.Manager _httpManager;
     private Dictionary<string, string> _currentEventData = new Dictionary<string, string>();
     [JsonProperty] private SimulationData _simulationData;
@@ -29,8 +30,15 @@ namespace Simulation
     public SimulationFacade(Http.Manager httpManager)
     {
       _httpManager = httpManager;
-      // _moveLesson = new MoveLesson();
-      // _currentLesson = _moveLesson;
+      
+    }
+    
+    void IInitializable.Initialize()
+    {
+      GetTaskList();
+      GetNextTask();
+
+      PlayerController.PlayerReady += OnPlayerReady;
     }
 
     void ITickable.Tick()
@@ -40,7 +48,15 @@ namespace Simulation
         GetNextTask();
       }
       
-      // _currentLesson.Tick();
+      _currentLesson.Tick();
+    }
+
+    private void OnPlayerReady(PlayerController playerController)
+    {
+      _playerController = playerController;
+      _moveLesson = new MoveLesson(playerController);
+      _currentLesson = _moveLesson;
+      _currentLesson.OnStart();
     }
 
     private void ParseTasksData(Http.Response response)
@@ -60,11 +76,7 @@ namespace Simulation
       var nextTask = response.ResponseText;
     }
 
-    void IInitializable.Initialize()
-    {
-      GetTaskList();
-      GetNextTask();
-    }
+    
 
     private void GetTaskList()
     {
