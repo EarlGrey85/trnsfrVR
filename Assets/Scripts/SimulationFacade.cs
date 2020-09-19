@@ -70,5 +70,11 @@ namespace Simulation
     {
       _httpManager.StartAsyncRequest("nextTask", _currentEventData, ParseNextTaskData);
     }
+
+    [System.Serializable]
+    public class Installables
+    {
+      public Transform CameraDesiredPoint;
+    }
   }
 }
