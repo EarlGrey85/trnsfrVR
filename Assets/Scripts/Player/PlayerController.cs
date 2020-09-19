@@ -11,19 +11,23 @@ namespace Simulation
     private readonly float _speed;
     private readonly float _rotationSpeed;
     private readonly float _turretRotationSpeed;
+    private readonly IWeapon _weapon;
 
     public Transform PlayerTransform => _vehicleTransform;
     public Transform TurretTransform => _turretTransform;
     
     public static event Action<PlayerController> PlayerReady = delegate {  };
 
-    public PlayerController(CommonSettings commonSettings, Installables installables)
+    public PlayerController(CommonSettings commonSettings, Installables installables, IWeapon weapon)
     {
       _vehicleTransform = installables.VehicleTransform;
       _turretTransform = installables.TurretTransform;
       _speed = commonSettings.Speed;
       _rotationSpeed = commonSettings.RotationSpeed;
       _turretRotationSpeed = commonSettings.TurretRotationSpeed;
+      _weapon = weapon;
+
+      Debug.LogError(weapon);
     }
 
     void IInitializable.Initialize()
