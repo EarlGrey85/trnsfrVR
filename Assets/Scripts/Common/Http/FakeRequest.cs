@@ -51,25 +51,26 @@ namespace Http
 
     private Response GetFakeResponse(string route)
     {
-      switch (route)
+      if (route == "getTasks")
       {
-        case "getTasks":
-          return _getTasksFakeResponse;
-        case "nextTask":
+        return _getTasksFakeResponse;
+      }
+      
+      if (route == "nextTask")
+      {
+        var currentTaskId = $"task{_fakePlatform.CurrentTaskNum}";
 
-          var currentTaskId = $"task{_fakePlatform.CurrentTaskNum}";
+        if (!_simulationData.TaskDescriptionMap.ContainsKey(currentTaskId))
+        {
+          Debug.LogWarning($"no more tasks");
+          currentTaskId = string.Empty;
+        }
 
-          if (!_simulationData.TaskDescriptionMap.ContainsKey(currentTaskId))
-          {
-            Debug.LogWarning($"no more tasks");
-            currentTaskId = string.Empty;
-          }
-
-          Debug.Log($"currentTaskId: {currentTaskId}");
-          ++_fakePlatform.CurrentTaskNum;
+        Debug.Log($"currentTaskId: {currentTaskId}");
+        ++_fakePlatform.CurrentTaskNum;
           
-          var nextTaskResponse = _responseFactory.Create(_fakeHeaders, currentTaskId);
-          return nextTaskResponse;
+        var nextTaskResponse = _responseFactory.Create(_fakeHeaders, currentTaskId);
+        return nextTaskResponse;
       }
 
       return null;

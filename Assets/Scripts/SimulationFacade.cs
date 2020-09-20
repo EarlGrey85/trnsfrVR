@@ -28,6 +28,7 @@ namespace Simulation
     private Dictionary<string, string> _currentEventData = new Dictionary<string, string>();
     private Lesson _currentLesson;
     private Dictionary<string, Lesson> _lessonsMap = new Dictionary<string, Lesson>();
+    private string currentTaskId;
     [JsonProperty] private SimulationData _simulationData;
     
     public static event Action TutorialCompleted = delegate {  };
@@ -92,21 +93,21 @@ namespace Simulation
 
     private void ProcessNextTaskData(Http.Response response)
     {
-      var nextTaskId = response.ResponseText;
+      currentTaskId = response.ResponseText;
 
-      if (!_lessonsMap.TryGetValue(nextTaskId, out var nextLesson))
+      if (!_lessonsMap.TryGetValue(currentTaskId, out var nextLesson))
       {
         TutorialCompleted.Invoke();
         Debug.Log($"tutorial completed!");
         return;
       }
 
-      if (!_simulationData.TaskDescriptionMap.TryGetValue(nextTaskId, out var description))
+      if (!_simulationData.TaskDescriptionMap.TryGetValue(currentTaskId, out var description))
       {
-        Debug.LogWarning($"no description for taskId: {nextTaskId}");
+        Debug.LogWarning($"no description for taskId: {currentTaskId}");
       }
 
-      Debug.Log(_simulationData.TaskDescriptionMap[nextTaskId]);
+      Debug.Log(_simulationData.TaskDescriptionMap[currentTaskId]);
       _currentLesson = nextLesson;
       _currentLesson.OnStart();
     }
@@ -118,6 +119,11 @@ namespace Simulation
 
     private void OnLessonCompleted(Lesson lesson)
     {
+      _currentEventData.Clear();
+      _currentEventData["taskId"] = currentTaskId;
+      _currentEventData["eventType"] = string.Empty; // I don't have that info
+      //_currentEventData["objectState"] = some serialized state, don't know exactly what info you need here
+      //_currentEventData["stepId"] , stepId is the same as taskId in my case. 
       _httpManager.StartAsyncRequest("nextTask", _currentEventData, ProcessNextTaskData);
     }
 

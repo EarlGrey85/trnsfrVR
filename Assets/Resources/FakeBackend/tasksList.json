@@ -1,7 +1,7 @@
 {
 	"tasks": {
 		"task1" : "use WASD key to move around. (about 30 meters)",
-		"task2" : "use Q and E keys to rotate the turret. (about 90 degrees overall)",
+		"task2" : "use Q and E keys to rotate the turret. (about 180 degrees overall)",
 		"task3" : "use space key to shoot. (5 times)"
 	},
 	"currentTaskId" : "task1"

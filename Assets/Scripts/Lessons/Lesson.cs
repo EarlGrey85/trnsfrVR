@@ -1,11 +1,9 @@
 ﻿using System;
-using Zenject;
 
 namespace Simulation
 {
   public abstract class Lesson
   {
-    private readonly string _id = null;
     private bool _eventSent;
     private PlayerController _playerController = null;
 
@@ -13,7 +11,7 @@ namespace Simulation
     public static event Action<Lesson> Started = delegate {  };
 
     public bool IsCompleted { get; private set; }
-    public string Description { get; } = null;
+    public string Description { get; }
 
     protected abstract bool Perform();
 
