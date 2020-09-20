@@ -20,9 +20,9 @@ namespace Simulation
   
   public class SimulationFacade : ITickable, IInitializable, IDisposable
   {
-    private readonly MoveLesson.MoveLessonSettings _moveLessonSettings;
-    private readonly RotateTurretLesson.RotateLessonSettings _rotateLessonSettings;
-    private readonly ShootingLesson.ShootingLessonSettings _shootingLessonSettings;
+    private readonly MoveLesson.Settings _moveLessonSettings;
+    private readonly RotateTurretLesson.Settings _rotateLessonSettings;
+    private readonly ShootingLesson.Settings _shootingLessonSettings;
     
     private readonly Http.Manager _httpManager;
     private Dictionary<string, string> _currentEventData = new Dictionary<string, string>();
@@ -34,9 +34,9 @@ namespace Simulation
     
     public SimulationFacade(
       Http.Manager httpManager,
-      MoveLesson.MoveLessonSettings moveLessonSettings, 
-      RotateTurretLesson.RotateLessonSettings rotateLessonSettings,
-      ShootingLesson.ShootingLessonSettings shootingLessonSettings)
+      MoveLesson.Settings moveLessonSettings, 
+      RotateTurretLesson.Settings rotateLessonSettings,
+      ShootingLesson.Settings shootingLessonSettings)
     {
       _httpManager = httpManager;
       _moveLessonSettings = moveLessonSettings;

@@ -3,15 +3,9 @@ using Zenject;
 
 namespace Simulation
 {
-  public interface ILesson
-  {
-    
-  }
-  
-  public abstract class Lesson : ILesson
+  public abstract class Lesson
   {
     private readonly string _id = null;
-    private readonly Settings _settings;
     private bool _eventSent;
     private PlayerController _playerController = null;
 
@@ -23,11 +17,10 @@ namespace Simulation
 
     protected abstract bool Perform();
 
-    protected Lesson(PlayerController playerController, string description, Settings settings)
+    protected Lesson(PlayerController playerController, string description)
     {
       _playerController = playerController;
       Description = description;
-      _settings = settings;
     }
     
     public void Tick()
@@ -54,12 +47,6 @@ namespace Simulation
     protected virtual void OnEnd()
     {
       Completed.Invoke(this);
-    }
-
-    [Serializable]
-    public abstract class Settings
-    {
-      
     }
   }
 }

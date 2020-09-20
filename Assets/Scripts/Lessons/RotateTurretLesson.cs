@@ -9,8 +9,8 @@ namespace Simulation
     private float accumulatedAngle;
     private Quaternion prevRotation;
     
-    public RotateTurretLesson(PlayerController playerController, string description, RotateLessonSettings rotateLessonSettings) :
-      base(playerController, description, rotateLessonSettings)
+    public RotateTurretLesson(PlayerController playerController, string description, Settings rotateLessonSettings) :
+      base(playerController, description)
     {
       _turretTransform = playerController.TurretTransform;
       _goalAngle = rotateLessonSettings.GoalAngle;
@@ -33,7 +33,7 @@ namespace Simulation
     }
 
     [System.Serializable]
-    public class RotateLessonSettings : Settings
+    public class Settings
     {
       public float GoalAngle;
     }

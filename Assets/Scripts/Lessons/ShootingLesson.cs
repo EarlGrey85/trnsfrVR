@@ -5,8 +5,8 @@
     private readonly int _requiredShotsNum;
     private int shotsCount;
     
-    public ShootingLesson(PlayerController playerController, string description, ShootingLessonSettings settings) : 
-      base(playerController, description, settings)
+    public ShootingLesson(PlayerController playerController, string description, Settings settings) : 
+      base(playerController, description)
     {
       _requiredShotsNum = settings.ShotsNum;
     }
@@ -34,7 +34,7 @@
     }
 
     [System.Serializable]
-    public class ShootingLessonSettings : Settings
+    public class Settings
     {
       public int ShotsNum;
     }

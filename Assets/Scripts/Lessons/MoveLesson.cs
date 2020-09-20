@@ -9,11 +9,11 @@ namespace Simulation
     private float _currentDist;
     private Vector3 _prevPosition;
 
-    public MoveLesson(PlayerController playerController, string description, MoveLessonSettings moveLessonSettings) 
-      : base(playerController, description, moveLessonSettings)
+    public MoveLesson(PlayerController playerController, string description, Settings settings) 
+      : base(playerController, description)
     {
       _playerTransform = playerController.PlayerTransform;
-      _goalDist = moveLessonSettings.GoalDistance;
+      _goalDist = settings.GoalDistance;
     }
 
     public override void OnStart()
@@ -33,7 +33,7 @@ namespace Simulation
     }
 
     [System.Serializable]
-    public class MoveLessonSettings : Settings
+    public class Settings
     {
       public float GoalDistance;
     }
