@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Platform;
 using Simulation;
 using UnityEngine;
-using Zenject;
 
 namespace Http
 {
-  public class FakeRequest : IRequest, IInitializable
+  public class FakeRequest : IRequest
   {
     private readonly string _serverAddress;
     private readonly string _route;
@@ -67,7 +65,7 @@ namespace Http
             currentTaskId = string.Empty;
           }
 
-          Debug.Log(currentTaskId);
+          Debug.Log($"currentTaskId: {currentTaskId}");
           ++_fakePlatform.CurrentTaskNum;
           
           var nextTaskResponse = _responseFactory.Create(_fakeHeaders, currentTaskId);
@@ -83,11 +81,6 @@ namespace Http
 
     public void AddData(Dictionary<string, string> data)
     {
-    }
-
-    public void Initialize()
-    {
-      Debug.Log("VAR");
     }
   }
 }

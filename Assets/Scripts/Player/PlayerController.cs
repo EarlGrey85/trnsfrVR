@@ -26,8 +26,6 @@ namespace Simulation
       _rotationSpeed = commonSettings.RotationSpeed;
       _turretRotationSpeed = commonSettings.TurretRotationSpeed;
       _weapon = weapon;
-
-      Debug.LogError(weapon);
     }
 
     void IInitializable.Initialize()
@@ -44,6 +42,11 @@ namespace Simulation
       _vehicleTransform.position += _vehicleTransform.forward * _speed * inputY * Time.deltaTime;
       _vehicleTransform.rotation *= Quaternion.AngleAxis(_rotationSpeed * inputX * Time.deltaTime, _vehicleTransform.up);
       _turretTransform.rotation *= Quaternion.AngleAxis(_turretRotationSpeed * turretControl * Time.deltaTime, _turretTransform.up);
+
+      if (Input.GetKeyDown(KeyCode.Space))
+      {
+        _weapon.Fire();
+      }
     }
 
     [System.Serializable]
@@ -51,6 +54,8 @@ namespace Simulation
     {
       public Transform VehicleTransform;
       public Transform TurretTransform;
+      public Transform CannonEndTransform;
+      public GameObject ProjectilePrefab;
     }
     
     [System.Serializable]

@@ -28,8 +28,6 @@ namespace Simulation
       accumulatedAngle += Quaternion.Angle(rotation, prevRotation);
       prevRotation = rotation;
 
-      Debug.Log(accumulatedAngle);
-
       return accumulatedAngle > _goalAngle;
     }
   }

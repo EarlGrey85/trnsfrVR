@@ -97,7 +97,7 @@ namespace Simulation
         Debug.LogWarning($"no description for taskId: {nextTaskId}");
       }
 
-      Debug.LogError(_simulationData.TaskDescriptionMap[nextTaskId]);
+      Debug.Log(_simulationData.TaskDescriptionMap[nextTaskId]);
       _currentLesson = nextLesson;
       _currentLesson.OnStart();
     }
