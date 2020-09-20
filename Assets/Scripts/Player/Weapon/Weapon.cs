@@ -1,6 +1,5 @@
 ﻿using System;
 using UnityEngine;
-using Zenject;
 
 namespace Simulation
 {
@@ -13,6 +12,8 @@ namespace Simulation
   {
     private readonly Projectile.Factory _projectileFactory = null;
     private readonly Transform _cannonEndTransform = null;
+    
+    public static event Action ShotFired = delegate {  };
 
     public Weapon(Projectile.Factory projectileFactory, PlayerController.Installables installables)
     {
@@ -24,6 +25,7 @@ namespace Simulation
     {
       var projectile = _projectileFactory.Create(_cannonEndTransform);
       projectile.Launch();
+      ShotFired.Invoke();
     }
   }
 }

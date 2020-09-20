@@ -4,15 +4,16 @@ namespace Simulation
 {
   public class RotateTurretLesson : Lesson
   {
-    private const float _goalAngle = 90;
+    private readonly float _goalAngle;
     private readonly Transform _turretTransform = null;
     private float accumulatedAngle;
     private Quaternion prevRotation;
     
-    public RotateTurretLesson(PlayerController playerController, string description) :
-      base(playerController, description)
+    public RotateTurretLesson(PlayerController playerController, string description, RotateLessonSettings rotateLessonSettings) :
+      base(playerController, description, rotateLessonSettings)
     {
       _turretTransform = playerController.TurretTransform;
+      _goalAngle = rotateLessonSettings.GoalAngle;
     }
 
     public override void OnStart()
@@ -29,6 +30,12 @@ namespace Simulation
       prevRotation = rotation;
 
       return accumulatedAngle > _goalAngle;
+    }
+
+    [System.Serializable]
+    public class RotateLessonSettings : Settings
+    {
+      public float GoalAngle;
     }
   }
 }

@@ -20,8 +20,11 @@ namespace Simulation
   
   public class SimulationFacade : ITickable, IInitializable, IDisposable
   {
-    private PlayerController _playerController;
-    private Http.Manager _httpManager;
+    private readonly MoveLesson.MoveLessonSettings _moveLessonSettings;
+    private readonly RotateTurretLesson.RotateLessonSettings _rotateLessonSettings;
+    private readonly ShootingLesson.ShootingLessonSettings _shootingLessonSettings;
+    
+    private readonly Http.Manager _httpManager;
     private Dictionary<string, string> _currentEventData = new Dictionary<string, string>();
     private Lesson _currentLesson;
     private Dictionary<string, Lesson> _lessonsMap = new Dictionary<string, Lesson>();
@@ -29,9 +32,16 @@ namespace Simulation
     
     public static event Action TutorialCompleted = delegate {  };
     
-    public SimulationFacade(Http.Manager httpManager)
+    public SimulationFacade(
+      Http.Manager httpManager,
+      MoveLesson.MoveLessonSettings moveLessonSettings, 
+      RotateTurretLesson.RotateLessonSettings rotateLessonSettings,
+      ShootingLesson.ShootingLessonSettings shootingLessonSettings)
     {
       _httpManager = httpManager;
+      _moveLessonSettings = moveLessonSettings;
+      _rotateLessonSettings = rotateLessonSettings;
+      _shootingLessonSettings = shootingLessonSettings;
     }
     
     void IInitializable.Initialize()
@@ -55,12 +65,11 @@ namespace Simulation
 
     private void OnPlayerReady(PlayerController playerController)
     {
-      _playerController = playerController;
-      
       _lessonsMap = new Dictionary<string, Lesson>
       {
-        {"task1", new MoveLesson(playerController, GetTaskDescription("task1"))},
-        {"task2", new RotateTurretLesson(playerController, GetTaskDescription("task2"))},
+        {"task1", new MoveLesson(playerController, GetTaskDescription("task1"), _moveLessonSettings)},
+        {"task2", new RotateTurretLesson(playerController, GetTaskDescription("task2"), _rotateLessonSettings)},
+        {"task3", new ShootingLesson(playerController, GetTaskDescription("task3"), _shootingLessonSettings)},
       };
       
       _httpManager.StartAsyncRequest("nextTask", _currentEventData, ProcessNextTaskData);
