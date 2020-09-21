@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: SimulationRealSettingsInstaller
   m_EditorClassIdentifier: 
   _settings:
-    Domain: 
-    Protocol: 
+    Domain: transferVR.com
+    Protocol: https
     IsDev: 0
+    AuthenticationKey: sghdhjsftxj

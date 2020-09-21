@@ -122,6 +122,7 @@ namespace Simulation
       _currentEventData.Clear();
       _currentEventData["taskId"] = currentTaskId;
       _currentEventData["eventType"] = string.Empty; // I don't have that info
+      _currentEventData["timeStamp"] = ((int) DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds).ToString();
       //_currentEventData["objectState"] = some serialized state, don't know exactly what info you need here
       //_currentEventData["stepId"] , stepId is the same as taskId in my case. 
       _httpManager.StartAsyncRequest("nextTask", _currentEventData, ProcessNextTaskData);

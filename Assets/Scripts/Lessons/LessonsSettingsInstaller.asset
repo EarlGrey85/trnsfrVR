@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68a0c882484303d458bcaf5eb9ef4cec, type: 3}
   m_Name: LessonsSettingsInstaller
   m_EditorClassIdentifier: 
-  settings:
+  _moveSettings:
     GoalDistance: 30
   _rotateTurretSettings:
     GoalAngle: 180

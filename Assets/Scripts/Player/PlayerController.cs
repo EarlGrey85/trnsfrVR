@@ -13,6 +13,8 @@ namespace Simulation
     private readonly float _turretRotationSpeed;
     private readonly IWeapon _weapon;
 
+    private bool _isShootPressed;
+
     public Transform PlayerTransform => _vehicleTransform;
     public Transform TurretTransform => _turretTransform;
     
@@ -38,14 +40,23 @@ namespace Simulation
       var inputY = Input.GetAxis("Vertical");
       var inputX = Input.GetAxis("Horizontal");
       var turretControl = Input.GetAxis("Turret");
+      var shoot = Input.GetAxis("Shoot");
 
       _vehicleTransform.position += _vehicleTransform.forward * _speed * inputY * Time.deltaTime;
       _vehicleTransform.rotation *= Quaternion.AngleAxis(_rotationSpeed * inputX * Time.deltaTime, _vehicleTransform.up);
       _turretTransform.rotation *= Quaternion.AngleAxis(_turretRotationSpeed * turretControl * Time.deltaTime, _turretTransform.up);
 
-      if (Input.GetKeyDown(KeyCode.Space))
+      if (Mathf.Approximately(shoot, 1))
       {
-        _weapon.Fire();
+        if (!_isShootPressed)
+        {
+          _isShootPressed = true;
+          _weapon.Fire();
+        }
+      }
+      else
+      {
+        _isShootPressed = false;
       }
     }
 
