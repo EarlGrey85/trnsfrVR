@@ -67,7 +67,7 @@ namespace Http
         }
 
         Debug.Log($"currentTaskId: {currentTaskId}");
-        ++_fakePlatform.CurrentTaskNum;
+        _fakePlatform.IncrementCurrentTaskNum(); // faking getting next task id on backend, which is task<taskNum> in this case
           
         var nextTaskResponse = _responseFactory.Create(_fakeHeaders, currentTaskId);
         return nextTaskResponse;
